@@ -196,5 +196,22 @@ class MainTest {
 
         WebElement accountCreatedHeader = driver.findElement(By.cssSelector("h2[data-qa='account-created']"));
         assertEquals("ACCOUNT CREATED!", accountCreatedHeader.getText());
+
+        WebElement continueButton = driver.findElement(By.xpath("//a[contains(text(),'Continue')]"));
+        continueButton.click();
+
+        try {
+            Thread.sleep(2000); // Wait for the next page to load
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        WebElement deleteAccountButton = driver.findElement(By.xpath("//a[contains(text(),'Delete Account')]"));
+        deleteAccountButton.click();
+
+        WebElement deleteAccountHeader = driver.findElement(By.cssSelector("h2[data-qa='account-deleted']"));
+        assertEquals("ACCOUNT DELETED!", deleteAccountHeader.getText());
+
+        driver.close();
     }
 }

@@ -68,11 +68,10 @@ public class WaitTestNew {
 
     @Test
     public void testTimeout() {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
         WebElement addBtn = driver.findElement(By.id("add_btn"));
         addBtn.click();
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("row2")));
 
         WebElement row2 = driver.findElement(By.id("row2"));
         assertTrue(row2.isDisplayed(), "Row 2 should be displayed after clicking the add button");

@@ -41,10 +41,10 @@ public class WaitTest {
 
     @Test
     public void testStaleElement() {
+        WebElement instructions = driver.findElement(By.id("instructions"));
         WebElement addBtn = driver.findElement(By.id("add_btn"));
         addBtn.click();
 
-        WebElement instructions = driver.findElement(By.id("instructions"));
         assertFalse(instructions.isDisplayed(), "Instructions should not be displayed after clicking the add button");
     }
 

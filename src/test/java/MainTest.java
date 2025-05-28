@@ -1,4 +1,3 @@
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -6,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
+import pom.*;
 
 import java.util.List;
 
@@ -99,118 +99,42 @@ class MainTest {
     @Test
     void testRegister() {
         driver.get("https://automationexercise.com/");
+        HomePage homePage = new HomePage(driver);
+        LoginPage loginPage = homePage.clickSignup();
 
-        WebElement signupButton = driver.findElement(By.partialLinkText("Signup"));
-        signupButton.click();
+        assertTrue(loginPage.verifySignupHeader());
 
-        WebElement signUpHeader = driver.findElement(By.xpath("//h2[contains(text(),'New User Signup!')]"));
-        assertEquals("New User Signup!", signUpHeader.getText());
+        String name = "Nur Aziz";
+        loginPage.enterName(name);
+        loginPage.enterEmail("nuraziz"+ System.currentTimeMillis() + "@example.com");
 
-        WebElement signupForm = driver.findElement(By.cssSelector(".signup-form > form"));
-        WebElement nameField = signupForm.findElement(By.name("name"));
-        nameField.sendKeys("Aziz");
+        SignupPage signupPage = loginPage.clickSubmit();
+        assertTrue(signupPage.verifyEnterAccountHeader());
 
-        WebElement emailField = signupForm.findElement(By.name("email"));
-        String randomEmail = "aziz" + System.currentTimeMillis() + "@example.com";
-        emailField.sendKeys(randomEmail);
+        signupPage.selectTitle();
+        signupPage.enterPassword("password123");
+        signupPage.selectDateOfBirth(1, 1, 2000);
+        signupPage.checkNewsletter();
+        signupPage.checkSpecialOffers();
+        signupPage.enterFirstName("Aziz");
+        signupPage.enterLastName("Nur");
+        signupPage.enterCompany("Company");
+        signupPage.enterAddress1("123 Main St");
+        signupPage.enterAddress2("Apt 4B");
+        signupPage.selectCountry("United States");
+        signupPage.enterState("California");
+        signupPage.enterCity("Los Angeles");
+        signupPage.enterZipcode("90001");
+        signupPage.enterMobileNumber("1234567890");
 
-        WebElement submitButton = signupForm.findElement(By.xpath("//button[contains(text(),'Signup')]"));
-        submitButton.click();
+        AccountCreatedPage accountCreatedPage = signupPage.clickCreateAccount();
+        assertTrue(accountCreatedPage.verifyAccountCreated());
 
-        try {
-            Thread.sleep(2000); // Wait for the next page to load
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        HomePage homePageAfterSignup = accountCreatedPage.clickContinue();
+        assertTrue(homePageAfterSignup.isLoggedIn(name));
 
-        WebElement enterAccountHeader = driver.findElement(By.cssSelector(".login-form > h2.title > b"));
-        assertEquals("ENTER ACCOUNT INFORMATION", enterAccountHeader.getText());
-
-        WebElement titleRadioButton = driver.findElement(By.id("id_gender1"));
-        titleRadioButton.click();
-
-        WebElement passwordField = driver.findElement(By.id("password"));
-        passwordField.sendKeys("password123");
-
-        WebElement dayOfBirthField = driver.findElement(By.id("days"));
-        dayOfBirthField.click();
-        dayOfBirthField.findElement(By.xpath("//option[@value='1']")).click();
-
-        WebElement monthOfBirthField = driver.findElement(By.id("months"));
-        monthOfBirthField.click();
-        monthOfBirthField.findElement(By.xpath("//option[@value='1']")).click();
-
-        WebElement yearOfBirthField = driver.findElement(By.id("years"));
-        yearOfBirthField.click();
-        yearOfBirthField.findElement(By.xpath("//option[@value='2000']")).click();
-
-        WebElement newsletterCheckbox = driver.findElement(By.id("newsletter"));
-        if (!newsletterCheckbox.isSelected()) {
-            newsletterCheckbox.click();
-        }
-
-        WebElement specialOffersCheckbox = driver.findElement(By.id("optin"));
-        if (!specialOffersCheckbox.isSelected()) {
-            specialOffersCheckbox.click();
-        }
-
-        WebElement firstNameField = driver.findElement(By.id("first_name"));
-        firstNameField.sendKeys("Aziz");
-
-        WebElement lastNameField = driver.findElement(By.id("last_name"));
-        lastNameField.sendKeys("Nur");
-
-        WebElement companyNameField = driver.findElement(By.id("company"));
-        companyNameField.sendKeys("Company");
-
-        WebElement address1Field = driver.findElement(By.id("address1"));
-        address1Field.sendKeys("123 Main St");
-
-        WebElement address2Field = driver.findElement(By.id("address2"));
-        address2Field.sendKeys("Apt 4B");
-
-        WebElement countryDropdown = driver.findElement(By.id("country"));
-        countryDropdown.click();
-        countryDropdown.findElement(By.xpath("//option[@value='United States']")).click();
-
-        WebElement stateField = driver.findElement(By.id("state"));
-        stateField.sendKeys("California");
-
-        WebElement cityField = driver.findElement(By.id("city"));
-        cityField.sendKeys("Los Angeles");
-
-        WebElement zipcodeField = driver.findElement(By.id("zipcode"));
-        zipcodeField.sendKeys("90001");
-
-        WebElement mobileNumberField = driver.findElement(By.id("mobile_number"));
-        mobileNumberField.sendKeys("1234567890");
-
-        WebElement createAccountButton = driver.findElement(By.xpath("//button[contains(text(),'Create Account')]"));
-        createAccountButton.click();
-
-        try {
-            Thread.sleep(2000); // Wait for the next page to load
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        WebElement accountCreatedHeader = driver.findElement(By.cssSelector("h2[data-qa='account-created']"));
-        assertEquals("ACCOUNT CREATED!", accountCreatedHeader.getText());
-
-        WebElement continueButton = driver.findElement(By.xpath("//a[contains(text(),'Continue')]"));
-        continueButton.click();
-
-        try {
-            Thread.sleep(2000); // Wait for the next page to load
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        WebElement deleteAccountButton = driver.findElement(By.xpath("//a[contains(text(),'Delete Account')]"));
-        deleteAccountButton.click();
-
-        WebElement deleteAccountHeader = driver.findElement(By.cssSelector("h2[data-qa='account-deleted']"));
-        assertEquals("ACCOUNT DELETED!", deleteAccountHeader.getText());
+        AccountDeletedPage accountDeletedPage = homePageAfterSignup.clickDeleteAccount();
+        assertTrue(accountDeletedPage.isAccountDeleted());
 
         driver.close();
     }
